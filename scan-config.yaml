@@ -8,7 +8,7 @@ env:
       excludePaths:
         - "https://your-target-app.com/logout.*"
         - "https://your-target-app.com/api/auth/signout.*"
-        - ".*\.pdf"  # Exclude heavy files the AJAX spider shouldn't "read"
+        - ".*\.pdf"
         - ".*\.zip"
   parameters:
     failOnError: true
@@ -16,6 +16,11 @@ env:
     continueOnFailure: false
 
 jobs:
+  - type: passiveScan-config
+    parameters:
+      maxAlertsPerRule: 10
+      scanOnlyInScope: true
+
   - type: spider
     parameters:
       context: "Link-ZAP-Scanner"
@@ -24,7 +29,25 @@ jobs:
   - type: ajaxSpider
     parameters:
       context: "Link-ZAP-Scanner"
-      browserId: "firefox-headless"  # Best for Ubuntu 24.04 Docker
-      maxDuration: 10                # Prevents infinite loops in SPAs
+      browserId: "firefox-headless"
+      maxDuration: 10
       maxCrawlDepth: 10
-      numberOfBrowsers: 2            # Adjust based on your 8-core CPU
+      numberOfBrowsers: 2
+
+  - type: passiveScan-wait      # Ensures all background passive checks finish before attacking
+    parameters:
+      maxDuration: 5
+
+  - type: activeScan
+    parameters:
+      context: "Link-ZAP-Scanner"
+      policy: "Default Policy"   # Can create custom policies for faster scans
+      maxRuleDurationInMins: 2    # Prevents "stuck" attack rules
+      maxScanDurationInMins: 60
+      addQueryParam: true        # Thoroughly tests URL parameters
+
+  - type: report
+    parameters:
+      template: "modern-red-confidential"
+      reportDir: "/zap/wrk/reports"
+      reportFile: "work-app-security-report"
