@@ -1,0 +1,30 @@
+env:
+  contexts:
+    - name: "Link-ZAP-Scanner"
+      urls:
+        - "https://your-target-app.com"
+      includePaths:
+        - "https://your-target-app.com/.*"
+  parameters:
+    failOnError: true
+    failOnWarning: false
+
+jobs:
+  - type: addSpyder
+    parameters:
+      maxDuration: 10              # Minutes
+  
+  - type: passiveScan-config
+    parameters:
+      maxAlertsPerRule: 10
+
+  - type: activeScan
+    parameters:
+      policy: "Default Policy"
+      threadPerHost: 5             # Higher threads for 8-core CPU
+
+  - type: report
+    parameters:
+      template: "modern-red-confidential"
+      reportDir: "/zap/wrk/reports"
+      reportFile: "security-audit-report"
