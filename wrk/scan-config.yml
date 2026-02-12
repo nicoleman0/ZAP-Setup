@@ -2,25 +2,25 @@ env:
   contexts:
     - name: "Link-ZAP-Scanner"
       urls:
-        - "https://your-target-app.com"
+        - "https://target-app.com"
       includePaths:
-        - "https://your-target-app.com/.*"
+        - "https://target-app.com/.*"
       excludePaths:
-        - "https://your-target-app.com/logout.*"
-        - "https://your-target-app.com/api/auth/signout.*"
-        - ".*\.pdf"
-        - ".*\.zip"
+        - "https://target-app.com/logout.*"
+        - "https://target-app.com/api/auth/signout.*"
+        - ".*\\.pdf"
+        - ".*\\.zip"
       
-      # --- Authentication Section ---
       authentication:
         method: "form"
         parameters:
-          loginPageUrl: "https://your-target-app.com/login"
-          loginRequestUrl: "https://your-target-app.com/api/login"
-          loginRequestBody: "username={%username%}&password={%password%}"
+          loginPageUrl: "https://target-app.com/login"
+          loginRequestUrl: "https://target-app.com/api/login"
+          # Uses the environment variables defined in docker-compose
+          loginRequestBody: "username=${ZAP_AUTH_USER}&password=${ZAP_AUTH_PW}"
         verification:
           method: "response"
-          loggedOutRegex: 'href="/login"' # Tells ZAP "If you see this, you are logged out"
+          loggedOutRegex: 'href="/login"' 
           pollFrequency: 60
       
       sessionManagement:
@@ -30,8 +30,8 @@ env:
       users:
         - name: "test-user"
           credentials:
-            username: "admin@example.com"
-            password: "verysecurepassword123"
+            username: "${ZAP_AUTH_USER}"
+            password: "${ZAP_AUTH_PW}"
 
   parameters:
     failOnError: true
@@ -47,15 +47,15 @@ jobs:
   - type: spider
     parameters:
       context: "Link-ZAP-Scanner"
-      user: "test-user" # Tells the spider to crawl as the authenticated user
-      maxDuration: 5
+      user: "test-user"
+      maxDuration: 10 
 
   - type: ajaxSpider
     parameters:
       context: "Link-ZAP-Scanner"
       user: "test-user"
       browserId: "firefox-headless"
-      maxDuration: 10
+      maxDuration: 15
       maxCrawlDepth: 10
       numberOfBrowsers: 2
 
@@ -66,7 +66,7 @@ jobs:
   - type: activeScan
     parameters:
       context: "Link-ZAP-Scanner"
-      user: "test-user" # Attacks the app using the authenticated session
+      user: "test-user"
       policy: "Default Policy"
       maxRuleDurationInMins: 2
       maxScanDurationInMins: 60
