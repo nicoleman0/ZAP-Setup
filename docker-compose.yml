@@ -3,14 +3,20 @@ services:
     image: zaproxy/zap-stable
     container_name: zap-scanner
     user: zap
-    # Resource limits based on hardware specs
+    shm_size: '2gb' 
+    environment:
+      - ZAP_X_MX=8192m
+      # Docker will pull these values from the .env file at runtime
+      - ZAP_AUTH_USER=${ZAP_AUTH_USER}
+      - ZAP_AUTH_PW=${ZAP_AUTH_PW} 
     deploy:
       resources:
         limits:
           cpus: '7.5'
           memory: 12G
     volumes:
-      - ./wrk:/zap/wrk:rw  # Maps local 'wrk' folder for configs and reports
+      - ./wrk:/zap/wrk:rw
+    # The 'zap' user needs write access to the local ./wrk folder
     command: >
       zap.sh -cmd 
       -autorun /zap/wrk/scan-config.yaml
