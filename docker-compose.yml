@@ -1,0 +1,16 @@
+services:
+  zap:
+    image: zaproxy/zap-stable
+    container_name: zap-scanner
+    user: zap
+    # Resource limits based on hardware specs
+    deploy:
+      resources:
+        limits:
+          cpus: '7.5'
+          memory: 12G
+    volumes:
+      - ./wrk:/zap/wrk:rw  # Maps local 'wrk' folder for configs and reports
+    command: >
+      zap.sh -cmd 
+      -autorun /zap/wrk/scan-config.yaml
