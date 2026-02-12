@@ -16,16 +16,11 @@ env:
         parameters:
           loginPageUrl: "https://target-app.com/login"
           loginRequestUrl: "https://target-app.com/api/login"
-          # Uses the environment variables defined in docker-compose
           loginRequestBody: "username=${ZAP_AUTH_USER}&password=${ZAP_AUTH_PW}"
         verification:
           method: "response"
-          loggedOutRegex: 'href="/login"' 
+          loggedInRegex: '(?i)href="/logout"|Sign Out'
           pollFrequency: 60
-      
-      sessionManagement:
-        method: "cookie"
-        parameters: {}
       
       users:
         - name: "test-user"
