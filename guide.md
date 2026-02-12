@@ -2,8 +2,6 @@
 
 ### 1. Server Prep (Post-Handover)
 
-Once the infra team gives you the Ubuntu 24.04 credentials:
-
 * **Install Docker:** This is the easiest way to manage the dependencies you listed (Java, ZAP binaries, etc.).
 ```bash
 sudo apt update && sudo apt install docker.io docker-compose -y
