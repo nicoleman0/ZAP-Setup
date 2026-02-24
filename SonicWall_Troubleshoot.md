@@ -1,6 +1,6 @@
-To ensure ZAP can communicate through SonicWall's Deep Packet Inspection (DPI), we will need to inject the SonicWall CA certificate into the Java TrustStore inside the running container.
+To ensure ZAP can communicate through SonicWall's Deep Packet Inspection (DPI), I will need to inject the SonicWall CA certificate into the Java TrustStore inside the running container.
 
-Since we are using Docker, the most "permanent" and cleanest way to do this is to mount the certificate as a volume and use a wrapper command to import it before the scan starts.
+Since I am using Docker, the most "permanent" and cleanest way to do this is to mount the certificate as a volume and use a wrapper command to import it before the scan starts.
 
 ### 1. Place the Certificate
 
