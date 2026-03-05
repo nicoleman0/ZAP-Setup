@@ -21,16 +21,17 @@ Make sure the following are in place before starting:
 **Set up the workspace:**
 
 ```bash
+nano docker-compose.yml   # paste in the compose file
+nano wrk/scan-config.yaml # paste in your scan config
+nano .env                 # add your credentials
+```
+---
+```bash
 cd ~/zap-scanner
 mkdir -p wrk/reports
 # Grant write access to UID 1000 — ZAP's internal container user
 sudo chown -R 1000:1000 ~/zap-scanner/wrk
 ```
-
-nano docker-compose.yml   # paste in the compose file
-nano wrk/scan-config.yaml # paste in your scan config
-nano .env                 # add your credentials
-
 
 > **Why UID 1000?** Docker containers don’t run as root by default (and shouldn’t). The ZAP image runs as a user with UID 1000 internally. When it tries to write reports to the mounted `./wrk` folder on your host, Linux checks whether UID 1000 has write permission on that directory. If your host user has a different UID (check with `id -u`), the container will get “Permission Denied” errors. `chown -R 1000:1000` makes UID 1000 the owner, regardless of what your host user is.
 
