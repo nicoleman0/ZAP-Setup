@@ -34,8 +34,6 @@ nano .env
 **In your `.env` file:**
 
 ```
-
-```
 ZAP_AUTH_USER=admin@example.com
 ZAP_AUTH_PW=YourSecurePassword123
 ```
